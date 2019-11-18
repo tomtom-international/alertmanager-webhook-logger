@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"flag"
 	errorLog "log"
 	"net/http"
 	"os"
@@ -15,13 +16,23 @@ type handler struct {
 }
 
 func main() {
+	address := flag.String("address", ":6725", "address and port of service")
+	json := flag.Bool("json", true, "enable json logging")
+	flag.Parse()
+
 	lw := log.NewSyncWriter(os.Stdout)
-	logger := log.With(log.NewJSONLogger(lw), "timestamp", log.DefaultTimestampUTC)
+	var logger log.Logger
+	if *json {
+		logger = log.NewJSONLogger(lw)
+	} else {
+		logger = log.NewLogfmtLogger(lw)
+	}
+	logger = log.With(logger, "timestamp", log.DefaultTimestampUTC)
 
 	http.Handle("/", &handler{
 		Logger: logger,
 	})
-	http.ListenAndServe(":6725", nil)
+	http.ListenAndServe(*address, nil)
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
