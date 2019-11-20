@@ -1,6 +1,6 @@
 # Alertmanager Webhook Logger
 
-Generates (structured) log messages from Prometheus AlertManager WebHooks.
+Generates (structured) log messages from [Prometheus AlertManager](https://prometheus.io) webhook notifier.
 
 ## Rationale
 
@@ -9,6 +9,7 @@ The [Prometheus Alertmanager](https://prometheus.io/docs/alerting/alertmanager/)
 ## Usage
 
 Command line flags:
+
     .\alertmanager-webhook-logger -h
 
 # TODO repo
