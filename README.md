@@ -12,11 +12,12 @@ Command line flags:
 
     .\alertmanager-webhook-logger -h
 
-# TODO repo
-    go get -u github.com/TODO
-    cd $env:GOPATH/src/github.com/TODO
-    .\alertmanager-webhook-logger
+# Build
+
+    go get -u https://github.com/tomtom-international/alertmanager-webhook-logger.git
+    cd $env:GOPATH/src/github.com/tomtom-international/alertmanager-webhook-logger.git
+    go build
 
 ## License
 
-Under [MIT](LICENSE)
+Under [Apache 2.0](LICENSE)
