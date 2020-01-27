@@ -10,12 +10,12 @@ The [Prometheus Alertmanager](https://prometheus.io/docs/alerting/alertmanager/)
 
 Command line flags:
 
-    .\alertmanager-webhook-logger -h
+    ./alertmanager-webhook-logger -h
 
-# Build
+## Build
 
-    go get -u https://github.com/tomtom-international/alertmanager-webhook-logger.git
-    cd $env:GOPATH/src/github.com/tomtom-international/alertmanager-webhook-logger.git
+    go get -u github.com/tomtom-international/alertmanager-webhook-logger
+    cd $env:GOPATH/src/github.com/tomtom-international/alertmanager-webhook-logger
     go build
 
 ## License
