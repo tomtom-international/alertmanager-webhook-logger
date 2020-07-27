@@ -48,7 +48,9 @@ func main() {
 	http.Handle("/", &handler{
 		Logger: logger,
 	})
-	http.ListenAndServe(*address, nil)
+	if err := http.ListenAndServe(*address, nil); err != nil {
+		errorLog.Fatalf("failed to start http server: %v", err)
+	}
 }
 
 func (h *handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
