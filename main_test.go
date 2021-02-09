@@ -67,39 +67,50 @@ func TestLogAlerts(t *testing.T) {
 		}
 	})
 
-	var logMessage map[string]string
+	var logMessage1, logMessage2 map[string]string
 
 	decoder := json.NewDecoder(strings.NewReader(out))
 
 	// message 1 parsed
-	err := decoder.Decode(&logMessage)
+	err := decoder.Decode(&logMessage1)
 
 	if err != nil {
 		t.Errorf("invalid json receved for alert 1")
 	}
 
-	checkMap(t, logMessage, alerts.CommonAnnotations)
-	checkMap(t, logMessage, alerts.CommonLabels)
-	checkMap(t, logMessage, alerts.GroupLabels)
-	checkString(t, logMessage, "receiver", alerts.Receiver)
-	checkString(t, logMessage, "externalURL", alerts.ExternalURL)
-	checkMap(t, logMessage, alerts.Alerts[0].Labels)
-	checkMap(t, logMessage, alerts.Alerts[0].Annotations)
+	checkMap(t, logMessage1, alerts.CommonAnnotations)
+	checkMap(t, logMessage1, alerts.CommonLabels)
+	checkMap(t, logMessage1, alerts.GroupLabels)
+	checkString(t, logMessage1, "receiver", alerts.Receiver)
+	checkString(t, logMessage1, "externalURL", alerts.ExternalURL)
+	checkMap(t, logMessage1, alerts.Alerts[0].Labels)
+	checkMap(t, logMessage1, alerts.Alerts[0].Annotations)
 
-	checkString(t, logMessage, "status", alerts.Alerts[0].Status)
-	checkString(t, logMessage, "startsAt", alerts.Alerts[0].StartsAt.Format(time.RFC3339))
-	checkString(t, logMessage, "endsAt", alerts.Alerts[0].EndsAt.Format(time.RFC3339))
-	checkString(t, logMessage, "generatorURL", alerts.Alerts[0].GeneratorURL)
+	checkString(t, logMessage1, "status", alerts.Alerts[0].Status)
+	checkString(t, logMessage1, "startsAt", alerts.Alerts[0].StartsAt.Format(time.RFC3339))
+	checkString(t, logMessage1, "endsAt", alerts.Alerts[0].EndsAt.Format(time.RFC3339))
+	checkString(t, logMessage1, "generatorURL", alerts.Alerts[0].GeneratorURL)
 
 	// message 2 parsed
-	err = decoder.Decode(&logMessage)
+	err = decoder.Decode(&logMessage2)
 
 	if err != nil {
 		t.Errorf("invalid json receved for alert 2")
 	}
 
-	checkMap(t, logMessage, alerts.Alerts[1].Labels)
-	checkMap(t, logMessage, alerts.Alerts[1].Annotations)
+	checkMap(t, logMessage2, alerts.Alerts[1].Labels)
+	checkMap(t, logMessage2, alerts.Alerts[1].Annotations)
+
+	checkNotInMap(t, logMessage2, alerts.Alerts[0].Labels)
+	checkNotInMap(t, logMessage2, alerts.Alerts[0].Annotations)
+}
+
+func checkNotInMap(t *testing.T, logMessage map[string]string, dict map[string]string) {
+	for k, _ := range dict {
+		if value, found := logMessage[k]; found {
+			t.Errorf("unexpected argument %s is present with value %s", k, value)
+		}
+	}
 }
 
 func checkMap(t *testing.T, logMessage map[string]string, dict map[string]string) {
