@@ -76,10 +76,10 @@ func logAlerts(alerts template.Data, logger log.Logger) error {
 	logger = logWith(alerts.CommonLabels, logger)
 	logger = logWith(alerts.GroupLabels, logger)
 	for _, alert := range alerts.Alerts {
-		logger = logWith(alert.Labels, logger)
-		logger = logWith(alert.Annotations, logger)
+		alertLogger := logWith(alert.Labels, logger)
+		alertLogger = logWith(alert.Annotations, alertLogger)
 
-		err := logger.Log("status", alert.Status, "startsAt", alert.StartsAt, "endsAt", alert.EndsAt, "generatorURL", alert.GeneratorURL, "externalURL", alerts.ExternalURL, "receiver", alerts.Receiver)
+		err := alertLogger.Log("status", alert.Status, "startsAt", alert.StartsAt, "endsAt", alert.EndsAt, "generatorURL", alert.GeneratorURL, "externalURL", alerts.ExternalURL, "receiver", alerts.Receiver)
 		if err != nil {
 			return err
 		}

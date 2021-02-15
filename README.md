@@ -18,6 +18,11 @@ Command line flags:
     cd $env:GOPATH/src/github.com/tomtom-international/alertmanager-webhook-logger
     go build
 
+## Test
+
+    go get -u github.com/kami-zh/go-capturer
+    go test
+
 ## License
 
 Under [Apache 2.0](LICENSE)

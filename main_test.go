@@ -67,29 +67,65 @@ func TestLogAlerts(t *testing.T) {
 		}
 	})
 
-	checkMap(t, out, alerts.CommonAnnotations)
-	checkMap(t, out, alerts.CommonLabels)
-	checkMap(t, out, alerts.GroupLabels)
-	checkString(t, out, "receiver", alerts.Receiver)
-	checkString(t, out, "externalURL", alerts.ExternalURL)
-	checkMap(t, out, alerts.Alerts[0].Labels)
-	checkMap(t, out, alerts.Alerts[0].Annotations)
+	var logMessage1, logMessage2 map[string]string
 
-	checkString(t, out, "status", alerts.Alerts[0].Status)
-	checkString(t, out, "startsAt", alerts.Alerts[0].StartsAt.Format(time.RFC3339))
-	checkString(t, out, "endsAt", alerts.Alerts[0].EndsAt.Format(time.RFC3339))
-	checkString(t, out, "generatorURL", alerts.Alerts[0].GeneratorURL)
+	decoder := json.NewDecoder(strings.NewReader(out))
+
+	// message 1 parsed
+	err := decoder.Decode(&logMessage1)
+
+	if err != nil {
+		t.Errorf("invalid json receved for alert 1")
+	}
+
+	checkMap(t, logMessage1, alerts.CommonAnnotations)
+	checkMap(t, logMessage1, alerts.CommonLabels)
+	checkMap(t, logMessage1, alerts.GroupLabels)
+	checkString(t, logMessage1, "receiver", alerts.Receiver)
+	checkString(t, logMessage1, "externalURL", alerts.ExternalURL)
+	checkMap(t, logMessage1, alerts.Alerts[0].Labels)
+	checkMap(t, logMessage1, alerts.Alerts[0].Annotations)
+
+	checkString(t, logMessage1, "status", alerts.Alerts[0].Status)
+	checkString(t, logMessage1, "startsAt", alerts.Alerts[0].StartsAt.Format(time.RFC3339))
+	checkString(t, logMessage1, "endsAt", alerts.Alerts[0].EndsAt.Format(time.RFC3339))
+	checkString(t, logMessage1, "generatorURL", alerts.Alerts[0].GeneratorURL)
+
+	// message 2 parsed
+	err = decoder.Decode(&logMessage2)
+
+	if err != nil {
+		t.Errorf("invalid json receved for alert 2")
+	}
+
+	checkMap(t, logMessage2, alerts.Alerts[1].Labels)
+	checkMap(t, logMessage2, alerts.Alerts[1].Annotations)
+
+	checkNotInMap(t, logMessage2, alerts.Alerts[0].Labels)
+	checkNotInMap(t, logMessage2, alerts.Alerts[0].Annotations)
 }
 
-func checkMap(t *testing.T, out string, dict map[string]string) {
-	for k, v := range dict {
-		checkString(t, out, k, v)
+func checkNotInMap(t *testing.T, logMessage map[string]string, dict map[string]string) {
+	for k, _ := range dict {
+		if value, found := logMessage[k]; found {
+			t.Errorf("unexpected argument %s is present with value %s", k, value)
+		}
 	}
 }
 
-func checkString(t *testing.T, out string, k string, v string) {
-	if !strings.Contains(out, "\""+k+"\":\""+v+"\"") {
-		t.Errorf("attribute %s:%s is missing in %s", k, v, out)
+func checkMap(t *testing.T, logMessage map[string]string, dict map[string]string) {
+	for k, v := range dict {
+		checkString(t, logMessage, k, v)
+	}
+}
+
+func checkString(t *testing.T, logMessage map[string]string, k string, v string) {
+	if _, exists := logMessage[k]; !exists {
+		t.Errorf("attribute %s:%s is not present", k, v)
+	}
+
+	if logMessage[k] != v {
+		t.Errorf("attribute %s:%s has unexpcted value %s", k, v, logMessage[k])
 	}
 }
 
@@ -105,7 +141,9 @@ func newAlerts() template.Data {
 				GeneratorURL: "file://generatorUrl",
 			},
 			template.Alert{
-				Status: "warning",
+				Annotations: map[string]string{"a_key_warn": "a_value_warn"},
+				Labels:      map[string]string{"l_key_warn": "l_value_warn"},
+				Status:      "warning",
 			},
 		},
 		CommonAnnotations: map[string]string{"ca_key": "ca_value"},
