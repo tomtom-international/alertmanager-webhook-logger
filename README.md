@@ -14,13 +14,10 @@ Command line flags:
 
 ## Build
 
-    go get -u github.com/tomtom-international/alertmanager-webhook-logger
-    cd $env:GOPATH/src/github.com/tomtom-international/alertmanager-webhook-logger
     go build
 
 ## Test
 
-    go get -u github.com/kami-zh/go-capturer
     go test
 
 ## License
