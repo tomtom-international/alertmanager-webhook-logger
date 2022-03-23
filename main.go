@@ -34,6 +34,9 @@ type handler struct {
 func main() {
 	address := flag.String("address", ":6725", "address and port of service")
 	json := flag.Bool("json", true, "enable json logging")
+	tls := flag.Bool("tls", false, "activate https instead of http")
+	tlsKeyPath := flag.String("tls-key", "key.pem", "path to the private key pem file for HTTPS")
+	tlsCertPath := flag.String("tls-cert", "cert.pem", "path to the certificate pem file for HTTPS")
 	flag.Parse()
 
 	lw := log.NewSyncWriter(os.Stdout)
@@ -48,8 +51,15 @@ func main() {
 	http.Handle("/", &handler{
 		Logger: logger,
 	})
-	if err := http.ListenAndServe(*address, nil); err != nil {
-		errorLog.Fatalf("failed to start http server: %v", err)
+
+        if *tls {
+		if err := http.ListenAndServeTLS(*address, *tlsCertPath, *tlsKeyPath, nil); err != nil {
+			errorLog.Fatalf("failed to start https server: %v", err)
+                }
+        } else {
+		if err := http.ListenAndServe(*address, nil); err != nil {
+			errorLog.Fatalf("failed to start http server: %v", err)
+                }
 	}
 }
 
