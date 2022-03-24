@@ -90,6 +90,7 @@ func TestLogAlerts(t *testing.T) {
 	checkString(t, logMessage1, "startsAt", alerts.Alerts[0].StartsAt.Format(time.RFC3339))
 	checkString(t, logMessage1, "endsAt", alerts.Alerts[0].EndsAt.Format(time.RFC3339))
 	checkString(t, logMessage1, "generatorURL", alerts.Alerts[0].GeneratorURL)
+	checkString(t, logMessage1, "fingerprint", alerts.Alerts[0].Fingerprint)
 
 	// message 2 parsed
 	err = decoder.Decode(&logMessage2)
@@ -139,6 +140,7 @@ func newAlerts() template.Data {
 				StartsAt:     time.Date(2000, 1, 1, 0, 0, 0, 0, time.UTC),
 				EndsAt:       time.Date(2000, 1, 1, 0, 0, 1, 0, time.UTC),
 				GeneratorURL: "file://generatorUrl",
+                                Fingerprint:  "3b15fd163d36582e",
 			},
 			template.Alert{
 				Annotations: map[string]string{"a_key_warn": "a_value_warn"},

@@ -79,7 +79,7 @@ func logAlerts(alerts template.Data, logger log.Logger) error {
 		alertLogger := logWith(alert.Labels, logger)
 		alertLogger = logWith(alert.Annotations, alertLogger)
 
-		err := alertLogger.Log("status", alert.Status, "startsAt", alert.StartsAt, "endsAt", alert.EndsAt, "generatorURL", alert.GeneratorURL, "externalURL", alerts.ExternalURL, "receiver", alerts.Receiver)
+		err := alertLogger.Log("status", alert.Status, "startsAt", alert.StartsAt, "endsAt", alert.EndsAt, "generatorURL", alert.GeneratorURL, "externalURL", alerts.ExternalURL, "receiver", alerts.Receiver, "fingerprint", alert.Fingerprint)
 		if err != nil {
 			return err
 		}
