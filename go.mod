@@ -1,8 +1,8 @@
 module github.com/tomtom-international/alertmanager-webhook-logger
 
-go 1.21
 
 toolchain go1.23.0
+
 
 require (
 	github.com/go-kit/kit v0.13.0
@@ -12,7 +12,7 @@ require (
 
 require (
 	github.com/beorn7/perks v1.0.1 // indirect
-	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+  github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/go-kit/log v0.2.1 // indirect
 	github.com/go-logfmt/logfmt v0.6.0 // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
